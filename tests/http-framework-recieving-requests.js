@@ -8,14 +8,13 @@ server.addHandler(new httpFramework.Handler('default'))
 server.on('request',(request,response)=>{
     console.log("request recieved")
     server.stop()
-    process.exit()
+    process.exit(0)
 })
 server.start()
 
 setTimeout(()=>{
-    throw new Error('Server did not recieve any requests')
     server.stop()
-    process.exit()
+    throw new Error('Server did not recieve any requests')
 },5000)
 
 require('http').request('http://localhost:10002/anything').end()

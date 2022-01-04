@@ -17,7 +17,7 @@ server.addHandler(new FunctionHandler())
 server.add('GET','/something',null,()=>{
     console.log( '/something end point executed')    
     server.stop()
-    process.exit()
+    process.exit(0)
 })
 server.on('start',()=>{
     console.log('server started')
@@ -26,9 +26,8 @@ server.on('request',()=>{
     console.log('request recieved')
 })
 setTimeout(()=>{
-    throw new Error('Server did not catch /something endpoint')
     server.stop()
-    process.exit()
+    throw new Error('Server did not catch /something endpoint')
 },5000)
 server.start();
 

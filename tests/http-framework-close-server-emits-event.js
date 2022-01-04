@@ -10,10 +10,10 @@ server.addHandler(new httpFramework.Handler('default'))
 server.on('stop',()=>{
     console.log('server stopped successfully')
     server.stop()
-    process.exit()
+    process.exit(0)
 })
 setTimeout(()=>{
-    server.stop()
+    server.stop()    
     throw new Error('Server did not emit a stop event')
 },2000)
 server.start();

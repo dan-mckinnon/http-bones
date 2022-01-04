@@ -17,15 +17,14 @@ server.addHandler(new FunctionHandler())
 server.on('request',()=>{
     console.log( 'request event executed')    
     server.stop()
-    process.exit()
+    process.exit(0)
 })
 server.on('start',()=>{
     console.log('server started')
 })
 setTimeout(()=>{
-    throw new Error('Server did not emit a request event')
     server.stop()
-    process.exit()
+    throw new Error('Server did not emit a request event')
 },5000)
 server.start();
 

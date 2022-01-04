@@ -18,12 +18,11 @@ server.addHandler(new FunctionHandler())
 server.add('GET','/something',{},()=>{
     console.log( '/something executed')    
     server.stop()
-    process.exit()
+    process.exit(0)
 })
 setTimeout(()=>{
-    throw new Error('Server did not execute /something path')
     server.stop()
-    process.exit()
+    throw new Error('Server did not execute /something path')
 },500)
 server.start();
 

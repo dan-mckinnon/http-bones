@@ -74,7 +74,7 @@ http.request("http://localhost:10009/something",(request)=>{
             throw new Error(`Invalid response.  Expected "hello-world" or "world-hello" and got "${data}"`)
         }
         server.stop()
-        process.exit()
+        process.exit(0)
     })
 }).end()
 

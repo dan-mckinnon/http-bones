@@ -6,7 +6,7 @@ let server = new httpFramework.Server({
 server.on('start',()=>{
     console.log( 'http server started!')
     server.stop()
-    process.exit()
+    process.exit(0)
 })
 setTimeout(()=>{
     server.stop()
