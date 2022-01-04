@@ -1,0 +1,27 @@
+{
+  "name": "http-bones",
+  "version": "0.0.1",
+  "description": "A bare-bones http server framework based on the http module exclusively.  Does not include an implementation.  See rest-bones for a complete set of http methods, serializers, and deserailizers.",
+  "main": "src/http-framework.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "run-tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dan-mckinnon/http-bones.git"
+  },
+  "keywords": [
+    "http",
+    "framework",
+    "server"
+  ],
+  "author": "Dan McKinnon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dan-mckinnon/http-bones/issues"
+  },
+  "homepage": "https://github.com/dan-mckinnon/http-bones#readme"
+}

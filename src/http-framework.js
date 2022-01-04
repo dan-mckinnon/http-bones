@@ -18,7 +18,7 @@ class Handler{
         this.#id = new String(id)
     }
     async isValidEndPointObject(endPointObject){
-
+        return true
     }
     async handle(endPointObject,dataObject){
         if ( this.#options.async ){
@@ -67,17 +67,17 @@ class Deserializer{
 
 class EndPointListener{
     #handler=null
-    #endPointObject=null
+    endPointObject=null
     constructor(handler,endPointObject) {
         if ( !(handler instanceof Handler)) {
             throw new TypeError('handler is not of type Handler')
         }
         this.#handler = handler
-        this.#endPointObject = endPointObject
+        this.endPointObject = endPointObject
     }
 
     async invoke(dataObject){
-        return await this.#handler.handle(this.#endPointObject,dataObject)        
+        return await this.#handler.handle(this.endPointObject,dataObject)        
     }
 }
 class EndPoint{
@@ -110,13 +110,27 @@ class EndPoint{
     }
     removeListener(endPointListener){
         if ( !(endPointListener instanceof EndPointListener)) {
+            //fallback to find end point by object instead
+            endPointListener = this.findListener(endPointListener)
+            if ( !endPointListener){
+                throw new Error('End point not present')
+            }
             throw new TypeError('endPointListener is not of type EndPointListener')
         }     
         let endPointListenerIndex = this.#listeners.indexOf(endPointListener)
         if ( endPointListenerIndex < 0 ){
-            throw new Error('End point not available')
+            throw new Error('End point not present')
         }
         this.#listeners = this.#listeners.splice(endPointListenerIndex,1)
+    }
+
+    findListener(endPointObject){
+        for( let endPointListener of this.#listeners){
+            if ( endPointListener.endPointObject === endPointObject ){
+                return endPointListener
+            }
+        }
+        return null
     }
 
     async invoke(rawData){
@@ -156,6 +170,18 @@ class HttpMethod{
         }        
         this.#endPoints[endPoint.id] = endPoint
     }
+    remove(path,endPointObject){
+        let endPoint = this.#endPoints[path]
+        if (!endPoint){
+            throw new Error(`endpoint "${path}" does not exist`)
+        }
+
+        if (!endPointObject){
+            delete this.#endPoints[endPoint.id]
+        } else {
+            endPoint.removeListener(endPointObject)
+        }
+    }
     removeEndPoint(endPoint){
         if ( !(endPoint instanceof EndPoint)) {
             throw new TypeError('endPoint is not of type EndPoint')
@@ -170,6 +196,7 @@ class HttpMethod{
            throw new EndPointExistsError(`End point "${id}" "${path}" already exists`,id,path) 
         }        
     }
+    
     
     createEndPointListener(path,deserializer,serializer,handler,endPointObject){
         let endPoint = this.#endPoints[path]
@@ -250,10 +277,9 @@ class Server extends EventEmitter{
             response.write(output)
             response.end()
         } catch(e){
-            throw e
             response.statusCode=400
             response.end()
-            
+            throw e            
         }        
 
     }
@@ -366,8 +392,20 @@ class Server extends EventEmitter{
 
     }
     remove(method,path,endPointObject=undefined){
-
+        let httpMethod = this.#httpMethods[method]
+        if ( !httpMethod ){
+            throw new Error(`HTTP method ${method} not implemented`)
+        }
+        httpMethod.remove(path,endPointObject)        
     }    
+    async detectEndPointListener(endPointObject){
+        for( let handler of this.#handlers){
+            if ( await handler.isValidEndPointObject(endPointObject)){
+                return handler
+            }
+        }
+        return null
+    }
 
     addEndPoint(methodId,endPoint){
         if ( !(endPoint instanceof EndPoint)) {
