@@ -1,5 +1,5 @@
 name: Publish to NPM
-on:
+on: 
   push:
     branches:
       - release
