@@ -1,10 +1,8 @@
-const util = require('util');
 const {spawn} = require('child_process');
-
-const showStdout = process.argv.length >= 3 ? process.argv.includes('debug') : false
-
 const fs = require('fs');
 const path = require('path');
+
+const showStdout = process.argv.length >= 3 ? process.argv.includes('debug') : false;
 
 (async ()=>{
     let error = false
@@ -21,22 +19,23 @@ const path = require('path');
             console.log()
             console.log(`Running test "\x1b[35m${testFile}\x1b[0m"`)
             for await(const stdout of child.stdout){
-                process.stderr.write(`\x1b[36m${testFile}:\x1b[0m ${stdout.toString()}`)
+                process.stdout.write(`\x1b[36m${testFile}:\x1b[0m ${stdout.toString()}`)
             }            
         }
 
         for await(const stderr of child.stderr){
+            if ( !error ){
+                console.error("\x1b[31m❌ One or more test(s) failed.\x1b[0m")
+            }
             error = true
             process.stderr.write(`\x1b[36m${testFile}:\x1b[0m ${stderr.toString()}`)
         }
     }
 
-    if (error){
-        console.log('')
-        console.log("\x1b[31mOne or more test(s) failed.\x1b[0m")
-    } else {
-        console.log("\x1b[32mAll tests passed.\x1b[0m")
+    if (!error){        
+        console.log("\x1b[32m✅ All tests passed.\x1b[0m")
+        process.exit(0)
     }
+    process.exit(1)
 
 })()
-

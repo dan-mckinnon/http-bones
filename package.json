@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "run-tests.js"
+    "test": "node run-tests.js"
   },
   "repository": {
     "type": "git",
