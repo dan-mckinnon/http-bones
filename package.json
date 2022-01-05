@@ -1,6 +1,6 @@
 {
   "name": "http-bones",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A bare-bones http server framework based on the http module exclusively.  Does not include an implementation.  See rest-bones for a complete set of http methods, serializers, and deserailizers.",
   "main": "src/http-framework.js",
   "directories": {
