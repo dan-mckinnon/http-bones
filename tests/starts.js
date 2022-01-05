@@ -12,4 +12,4 @@ setTimeout(()=>{
     server.stop()
     throw new Error('Server did not emit "start" event')
 },500)
-//server.start()
+server.start()
